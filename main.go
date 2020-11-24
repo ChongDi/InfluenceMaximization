@@ -11,6 +11,7 @@ import (
 func main() {
 	path := "GraphData/facebook_combined.txt"
 	g := graph.NewUndirectedGraph()
-	IM.CreatGraphFromFile(path, g)
-	fmt.Println(g.Nodes().Len())
+	IM.CreatUndirectedGraphFromFile(path, g)
+	fmt.Println(IM.IM_Entrance_Undirected(g))
+
 }
