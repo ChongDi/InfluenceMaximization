@@ -2,6 +2,7 @@ package InfluenceMaximization
 
 import (
 	"bufio"
+	"fmt"
 
 	"io"
 	"os"
@@ -106,9 +107,54 @@ func (g *UndirectedGraph) LT_model() {
 
 }
 
-func IM_Entrance_Undirected(g *graph.UndirectedGraph) int {
+func IMEntranceUndirected(g *graph.UndirectedGraph) int {
 	var g_ *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
 	g_.UndirectedGraph = g
-	seed := []int64{0, 1, 2, 3, 4, 5}
+	seed := []int64{0}
 	return g_.IC_model(seed, 0.01)
+}
+
+func ICModelTest(g_ *graph.UndirectedGraph) {
+	MCNum := 64
+
+	var g *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
+	var g_p PropagationSimulation
+	g_p = g
+	g.UndirectedGraph = g_
+	nodes := g.Nodes()
+	seed := []int64{}
+	var max_node int64
+	var max_range float64
+	for nodes.Next() {
+		node := nodes.Node().ID()
+		seed = append(seed, node)
+		iter := make(chan int, MCNum)
+		results := make(chan int, MCNum)
+		for i := 0; i < 64; i++ { // workers
+			go worker(g_p, iter, results, seed, 0.01)
+		}
+		for i := 0; i < MCNum; i++ {
+			iter <- i
+		}
+		close(iter)
+		sum_ := 0
+		for i := 0; i < MCNum; i++ {
+			res := <-results
+			sum_ += res
+		}
+		avg_ := float64(sum_) / float64(MCNum)
+		if avg_ >= max_range {
+			max_node = node
+			max_range = avg_
+		}
+		fmt.Println(node, avg_)
+	}
+	fmt.Println(max_node, max_range)
+}
+
+func worker(g PropagationSimulation, jobs <-chan int, results chan<- int, seed []int64, p float64) {
+	for i := range jobs {
+		_ = i
+		results <- g.IC_model(seed, p)
+	}
 }
