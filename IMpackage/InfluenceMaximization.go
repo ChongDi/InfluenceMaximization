@@ -23,6 +23,16 @@ func check(e error) {
 	}
 }
 
+func InInt64Slice(haystack []int64, needle int64) bool {
+	for _, e := range haystack {
+		if e == needle {
+			return true
+		}
+	}
+
+	return false
+}
+
 type PropagationSimulation interface {
 	IC_model([]int64, float64) int
 }
@@ -80,10 +90,14 @@ func (g *UndirectedGraph) IC_model(seed []int64, p float64) int {
 			if g.Node(node) != nil {
 				neighbors := g.From(node)
 				for neighbors.Next() {
-					r := rand_01()
-					if r <= p {
-						active_i = append(active_i, neighbors.Node().ID())
+					neighbor := neighbors.Node().ID()
+					if !InInt64Slice(seed, neighbor) {
+						r := rand_01()
+						if r <= p {
+							active_i = append(active_i, neighbor)
+						}
 					}
+
 				}
 			} else {
 				panic("seed does not in the graph!")
@@ -115,7 +129,7 @@ func IMEntranceUndirected(g *graph.UndirectedGraph) int {
 }
 
 func ICModelTest(g_ *graph.UndirectedGraph) {
-	MCNum := 64
+	MCNum := 10000
 
 	var g *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
 	var g_p PropagationSimulation
