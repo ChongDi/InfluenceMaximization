@@ -139,7 +139,6 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 	g_p = g
 	g.UndirectedGraph = g_
 	nodes := g.Nodes()
-	seed := []int64{}
 	var max_node int64
 	var max_range float64
 
@@ -151,7 +150,7 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 	w := csv.NewWriter(f)
 	for nodes.Next() {
 		node := nodes.Node().ID()
-		seed = append(seed, node)
+		seed := append([]int64{}, node)
 		iter := make(chan int, MCNum)
 		results := make(chan int, MCNum)
 		for i := 0; i < 64; i++ { // workers
