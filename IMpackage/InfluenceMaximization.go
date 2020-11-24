@@ -170,7 +170,7 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 			max_node = node
 			max_range = avg_
 		}
-		fmt.Println(node, avg_)
+		fmt.Println(node, avg_, " | ", max_node, max_range)
 		res := []string{strconv.FormatInt(node, 10), strconv.FormatFloat(avg_, 'E', -1, 64)}
 		w.Flush()
 		err := w.Write(res)
