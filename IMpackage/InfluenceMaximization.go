@@ -2,6 +2,7 @@ package InfluenceMaximization
 
 import (
 	"bufio"
+	"encoding/csv"
 	"fmt"
 
 	"io"
@@ -73,7 +74,9 @@ func CreatUndirectedGraphFromFile(path string, g *graph.UndirectedGraph) {
 		}
 		node_s, _ := strconv.Atoi(strings.Split(string(a), " ")[0])
 		node_d, _ := strconv.Atoi(strings.Split(string(a), " ")[1])
-		g.SetEdge(g.NewEdge(graph.Node(node_s), graph.Node(node_d)))
+		if node_s != node_d { // avoid self-edge
+			g.SetEdge(g.NewEdge(graph.Node(node_s), graph.Node(node_d)))
+		}
 	}
 }
 
@@ -139,6 +142,13 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 	seed := []int64{}
 	var max_node int64
 	var max_range float64
+
+	f, err := os.Create("test_GrQc.csv") // write result to .csv file
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	w := csv.NewWriter(f)
 	for nodes.Next() {
 		node := nodes.Node().ID()
 		seed = append(seed, node)
@@ -162,8 +172,17 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 			max_range = avg_
 		}
 		fmt.Println(node, avg_)
+		res := []string{strconv.FormatInt(node, 10), strconv.FormatFloat(avg_, 'E', -1, 64)}
+		w.Flush()
+		err := w.Write(res)
+		if err != nil {
+			check(err)
+		}
 	}
 	fmt.Println(max_node, max_range)
+	res := []string{strconv.FormatInt(max_node, 10), strconv.FormatFloat(max_range, 'E', -1, 64)}
+	w.Write(res)
+	w.Flush()
 }
 
 func worker(g PropagationSimulation, jobs <-chan int, results chan<- int, seed []int64, p float64) {

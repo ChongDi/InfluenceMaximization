@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	path := "GraphData/facebook_combined.txt"
+	path := "GraphData/CA-GrQc.txt"
 	g := graph.NewUndirectedGraph()
 	IM.CreatUndirectedGraphFromFile(path, g)
 	IM.ICModelTest(g)
