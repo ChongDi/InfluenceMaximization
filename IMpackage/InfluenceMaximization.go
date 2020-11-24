@@ -1,8 +1,8 @@
-package main
+package InfluenceMaximization
 
 import (
 	"bufio"
-	"fmt"
+
 	"io"
 	"os"
 	"strconv"
@@ -17,7 +17,7 @@ func check(e error) {
 	}
 }
 
-func creat_graph_from_file(path string, g *graph.UndirectedGraph) int {
+func CreatGraphFromFile(path string, g *graph.UndirectedGraph) {
 	f, err := os.Open(path)
 	check(err)
 	defer f.Close()
@@ -31,13 +31,4 @@ func creat_graph_from_file(path string, g *graph.UndirectedGraph) int {
 		node_d, _ := strconv.Atoi(strings.Split(string(a), " ")[1])
 		g.SetEdge(g.NewEdge(graph.Node(node_s), graph.Node(node_d)))
 	}
-	fmt.Println(g.Nodes().Len())
-
-	return 0
-}
-
-func main() {
-	path := "GraphData/facebook_combined.txt"
-	g := graph.NewUndirectedGraph()
-	creat_graph_from_file(path, g)
 }
