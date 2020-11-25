@@ -1,6 +1,8 @@
 ### Influence Maximization with Go
 
-This project provides models for influence maximization. Including: 1. Independent cascade model.
+This project provides models for influence maximization. Including: 
+
+1. Independent cascade model.
 
 2. Weighted cascade model.
 
