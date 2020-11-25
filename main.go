@@ -10,5 +10,5 @@ func main() {
 	path := "GraphData/CA-GrQc.txt"
 	g := graph.NewUndirectedGraph()
 	IM.CreatUndirectedGraphFromFile(path, g)
-	IM.ICModelTest(g)
+	IM.ModelTest(g)
 }

@@ -36,6 +36,7 @@ func InInt64Slice(haystack []int64, needle int64) bool {
 
 type PropagationSimulation interface {
 	IC_model([]int64, float64) int
+	WC_model([]int64) int
 }
 
 // random number following uniform distribution U~(0,1)
@@ -83,7 +84,7 @@ func CreatUndirectedGraphFromFile(path string, g *graph.UndirectedGraph) {
 // Independent Cascade propagation model for undirected graphs
 // Parameter:
 //			seed: set of the original active nodes
-//			p:    probability of activation between nodes
+//			p:    activation probability between nodes
 // return: the number of activated node in this simulation
 func (g *UndirectedGraph) IC_model(seed []int64, p float64) int {
 	active := seed
@@ -116,8 +117,41 @@ func (g *UndirectedGraph) IC_model(seed []int64, p float64) int {
 	return len(seed)
 }
 
-func (g *UndirectedGraph) WC_model() {
+// Weighted Cascade propagation model for undirected graphs
+// Parameter:
+//			seed: set of the original active nodes
+// *the activation probability for node i is set to 1/degree(n)
+// return: the number of activated node in this simulation
+func (g *UndirectedGraph) WC_model(seed []int64) int {
+	active := seed
+	for {
+		var active_i []int64
+		for _, node := range active {
+			if g.Node(node) != nil {
+				neighbors := g.From(node)
+				for neighbors.Next() {
+					neighbor := neighbors.Node().ID()
+					if !InInt64Slice(seed, neighbor) {
+						r := rand_01()
+						p := 1.0 / float64(g.From(neighbor).Len())
+						if r <= p {
+							active_i = append(active_i, neighbor)
+						}
+					}
 
+				}
+			} else {
+				panic("seed does not in the graph!")
+			}
+		}
+		if active_i == nil {
+			break
+		}
+		active = remove_dup_int64(active_i)
+		seed = append(seed, active_i...)
+	}
+	seed = remove_dup_int64(seed)
+	return len(seed)
 }
 
 func (g *UndirectedGraph) LT_model() {
@@ -131,7 +165,7 @@ func IMEntranceUndirected(g *graph.UndirectedGraph) int {
 	return g_.IC_model(seed, 0.01)
 }
 
-func ICModelTest(g_ *graph.UndirectedGraph) {
+func ModelTest(g_ *graph.UndirectedGraph) {
 	MCNum := 10000
 
 	var g *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
@@ -142,7 +176,7 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 	var max_node int64
 	var max_range float64
 
-	f, err := os.Create("test_GrQc.csv") // write result to .csv file
+	f, err := os.Create("test_GrQc_WC.csv") // write result to .csv file
 	if err != nil {
 		panic(err)
 	}
@@ -187,6 +221,7 @@ func ICModelTest(g_ *graph.UndirectedGraph) {
 func worker(g PropagationSimulation, jobs <-chan int, results chan<- int, seed []int64, p float64) {
 	for i := range jobs {
 		_ = i
-		results <- g.IC_model(seed, p)
+		// results <- g.IC_model(seed, p)
+		results <- g.WC_model(seed)
 	}
 }
