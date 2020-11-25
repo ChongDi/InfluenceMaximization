@@ -9,6 +9,7 @@ This project provides models for influence maximization. Including:
 3. Linear threshold model. (To be finished)
 
 **LICENSE**
+
 The MIT License (MIT)
 
 Copyright (c) 2016 Michael Rose
