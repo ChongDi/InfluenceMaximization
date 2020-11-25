@@ -138,7 +138,6 @@ func (g *UndirectedGraph) WC_model(seed []int64) int {
 							active_i = append(active_i, neighbor)
 						}
 					}
-
 				}
 			} else {
 				panic("seed does not in the graph!")
