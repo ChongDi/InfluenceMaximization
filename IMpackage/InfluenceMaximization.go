@@ -83,8 +83,8 @@ func CreatUndirectedGraphFromFile(path string, g *graph.UndirectedGraph) {
 
 // Independent Cascade propagation model for undirected graphs
 // Parameter:
-//			seed: set of the original active nodes
-//			p:    activation probability between nodes
+//			 seed: set of the original active nodes
+//			 p:    activation probability between nodes
 // return: the number of activated node in this simulation
 func (g *UndirectedGraph) IC_model(seed []int64, p float64) int {
 	active := seed
@@ -119,7 +119,7 @@ func (g *UndirectedGraph) IC_model(seed []int64, p float64) int {
 
 // Weighted Cascade propagation model for undirected graphs
 // Parameter:
-//			seed: set of the original active nodes
+//			 seed: set of the original active nodes
 // *the activation probability for node i is set to 1/degree(n)
 // return: the number of activated node in this simulation
 func (g *UndirectedGraph) WC_model(seed []int64) int {
@@ -159,7 +159,7 @@ func (g *UndirectedGraph) LT_model() {
 }
 
 func IMEntranceUndirected(g *graph.UndirectedGraph) int {
-	var g_ *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
+	var g_ *UndirectedGraph = new(UndirectedGraph) // (graph.UndirectedGraph -> UndirectedGraph)
 	g_.UndirectedGraph = g
 	seed := []int64{0}
 	return g_.IC_model(seed, 0.01)
@@ -168,7 +168,7 @@ func IMEntranceUndirected(g *graph.UndirectedGraph) int {
 func ModelTest(g_ *graph.UndirectedGraph) {
 	MCNum := 10000
 
-	var g *UndirectedGraph = new(UndirectedGraph) //(graph.UndirectedGraph -> UndirectedGraph)
+	var g *UndirectedGraph = new(UndirectedGraph) // (graph.UndirectedGraph -> UndirectedGraph)
 	var g_p PropagationSimulation
 	g_p = g
 	g.UndirectedGraph = g_
