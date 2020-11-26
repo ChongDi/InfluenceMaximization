@@ -63,7 +63,10 @@ func remove_dup_int64(d []int64) []int64 {
 // Creat an undirected graph from file,
 // the file format follows datasets from "Stanford Large Network Dataset Collection":
 // https://snap.stanford.edu/data/index.html
-func CreatUndirectedGraphFromFile(path string, g *graph.UndirectedGraph) {
+func CreatUndirectedGraphFromFile(path string) *UndirectedGraph {
+	graph_g := graph.NewUndirectedGraph()
+	var g *UndirectedGraph = new(UndirectedGraph)
+	g.UndirectedGraph = graph_g
 	f, err := os.Open(path)
 	check(err)
 	defer f.Close()
@@ -79,6 +82,7 @@ func CreatUndirectedGraphFromFile(path string, g *graph.UndirectedGraph) {
 			g.SetEdge(g.NewEdge(graph.Node(node_s), graph.Node(node_d)))
 		}
 	}
+	return g
 }
 
 // Independent Cascade propagation model for undirected graphs
@@ -164,13 +168,11 @@ func IMEntranceUndirected(g *graph.UndirectedGraph) int {
 	return g_.IC_model(seed, 0.01)
 }
 
-func ModelTest(g_ *graph.UndirectedGraph) {
+func ModelTest(g *UndirectedGraph) {
 	MCNum := 10000
 
-	var g *UndirectedGraph = new(UndirectedGraph) // (graph.UndirectedGraph -> UndirectedGraph)
 	var g_p PropagationSimulation
 	g_p = g
-	g.UndirectedGraph = g_
 	nodes := g.Nodes()
 	var max_node int64
 	var max_range float64
