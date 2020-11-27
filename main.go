@@ -7,6 +7,6 @@ import (
 func main() {
 	path := "GraphData/CA-GrQc.txt"
 
-	g := IM.CreatUndirectedGraphFromFile(path)
+	g := IM.CreateUndirectedGraphFromFile(path) // return an undirected graph generated from 'path'.
 	IM.ModelTest(g)
 }
